@@ -6,7 +6,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 // import fs from '@node/fs';
 
 // Initialize a Pin* as fs from 'fs/promises';econe client with your API key
-const pc = new Pinecone({ apiKey: '' });
+const pc = new Pinecone({ apiKey: 'pcsk_36NXkV_mhaFt4Nn1mZHwtkJ8AorMg9PfU4mAoVgmLken9rEpdj8o3eme2oVZDRftyAttE' });
 
 // Define a sample dataset where each item has a unique ID and piece of text
 // const data = [
@@ -64,7 +64,7 @@ const records = texts.map((d, i) => ({
 await index.namespace('example-namespace').upsert(records);
 
 // Define your query
-const query = ['Give a brief history of the Apple company.'];
+const query = ['What is Pawpaw.'];
 
 // Convert the query into a numerical vector that Pinecone can search with
 const queryEmbedding = await pc.inference.embed(model, query, { inputType: 'query' });
@@ -80,7 +80,7 @@ const queryResponse = await index.namespace('example-namespace').query({
 // console.log(queryResponse);
 
 console.log('Initializing Google AI API...');
-const googleAI = new GoogleGenerativeAI('AIzaSyAF35O_zPESjEH6mXQjzKh7AQFSaqZDiTo');
+const googleAI = new GoogleGenerativeAI('');
 // const embedModel = googleAI.getEmbeddingModel('embedding-gecko-001');
 
 const gmodel = googleAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
