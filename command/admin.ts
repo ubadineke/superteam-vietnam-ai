@@ -21,7 +21,7 @@ export const adminCommand = (bot: Telegraf<MyContext>) => {
           ctx.session.awaitingPassword = false;
           return ctx.reply(
             'Access granted! Here are the admin options:',
-            Markup.keyboard([['📤 Upload Documents', '🛠 Manage Documents ', '🔙 Exit Admin Mode']])
+            Markup.keyboard([['📤 Upload Document', '🛠 Manage Documents ', '🔙 Exit Admin Mode']])
               .resize()
               .oneTime()
           );
@@ -35,7 +35,7 @@ export const adminCommand = (bot: Telegraf<MyContext>) => {
       const validAdminOptions = [
         // '📊 View Reports',
         '🛠 Manage Documents',
-        '📤 Upload Documents',
+        '📤 Upload Document',
         '🔙 Exit Admin Mode',
       ];
       if (!validAdminOptions.includes(userInput)) {

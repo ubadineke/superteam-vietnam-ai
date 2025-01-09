@@ -1,6 +1,10 @@
 import { Telegraf } from 'telegraf';
 import axios from 'axios';
 import { MyContext } from '../bot';
+import { chunkData } from '../utils/chunkData';
+import { vectorizeAndUpsert } from '../utils/vectorizeAndUpsert';
+import generateRandomNumber from '../utils/generateRandomNumber';
+import Documents from '../models/document.model';
 
 const uploadDocumentHandler = (bot: Telegraf<MyContext>) => {
   bot.on('document', async (ctx) => {
@@ -16,8 +20,13 @@ const uploadDocumentHandler = (bot: Telegraf<MyContext>) => {
 
     const { file_id, file_name, file_size, mime_type } = document;
 
+    //APps own document ID
+    const documentId = `document_${generateRandomNumber(10)}`;
     // Acknowledge receipt of the document
-    await ctx.reply(`Received document:\n- Name: ${file_name}\n- Size: ${file_size} bytes\n- Type: ${mime_type}`);
+    await ctx.reply(
+      `Received document:\n- Name: ${file_name}\n- Size: ${file_size} bytes\n- id: document_${documentId}`
+    );
+    await ctx.reply('Parsing...');
 
     try {
       // Get the file URL
@@ -32,8 +41,17 @@ const uploadDocumentHandler = (bot: Telegraf<MyContext>) => {
 
       console.log('Document content:', response.data); // Here you can process the document content further
 
+      //Chunk Data
+      const chunkedData = await chunkData(response.data);
+
+      //Vectorize Chunked Data and Upsert to Pinecone
+      await vectorizeAndUpsert(chunkedData, documentId);
+
+      //If Vectorization is successful, store a reference in mongodb
+      await Documents.create({ id: documentId, name: file_name });
+
       // Send the parsed content back to the user for verification
-      return ctx.reply('Document uploaded and parsed successfully. You can now use it for AI training.');
+      ctx.reply('Document uploaded and parsed successfully. You can now query the AI.');
     } catch (error) {
       console.error('Error during document upload:', error);
       return ctx.reply('There was an error processing the document. Please try again.');

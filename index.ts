@@ -6,7 +6,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 // import fs from '@node/fs';
 
 // Initialize a Pin* as fs from 'fs/promises';econe client with your API key
-const pc = new Pinecone({ apiKey: 'pcsk_36NXkV_mhaFt4Nn1mZHwtkJ8AorMg9PfU4mAoVgmLken9rEpdj8o3eme2oVZDRftyAttE' });
+const pc = new Pinecone({ apiKey: '' });
 
 // Define a sample dataset where each item has a unique ID and piece of text
 // const data = [

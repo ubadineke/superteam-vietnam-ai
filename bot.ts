@@ -1,11 +1,12 @@
 import { Context, Telegraf, Markup, session } from 'telegraf';
 import { adminCommand } from './command/admin';
-import express from 'express';
-import axios from 'axios';
+// import express from 'express';
+// import axios from 'axios';
 import dotenv from 'dotenv';
+import connectDB from './config/mongodb';
 
 dotenv.config();
-const app = express();
+// const app = express();
 
 interface SessionData {
   currentCommand?: string | null;
@@ -41,16 +42,28 @@ adminCommand(bot);
 //   console.log('Bot is running...');
 // });
 
-app.use(bot.webhookCallback('/webhook'));
+// app.use(bot.webhookCallback('/webhook'));
 
 // Define your bot commands or logic
-bot.command('start', (ctx) => {
-  ctx.reply('Welcome! This bot uses webhooks.');
-});
 
 // Start the local server
-app.listen(3000, () => {
-  console.log('Bot is running on port 3000');
+// app.listen(3000, () => {
+//   console.log('Bot is running on port 3000');
+// });
+
+// bot.launch({
+//   webhook: {
+//     domain: 'https://058a-105-116-10-122.ngrok-free.app/webhook',
+//     port: 3000,
+//     // hookPath: '/webhook',
+//   },
+// });
+
+connectDB();
+bot.launch();
+
+bot.command('start', (ctx) => {
+  ctx.reply('Welcome! This bot uses webhooks.');
 });
 
 // bot.start((ctx) => {
