@@ -4,6 +4,7 @@ import { adminCommand } from './command/admin';
 // import axios from 'axios';
 import dotenv from 'dotenv';
 import connectDB from './config/mongodb';
+import { portalCommand } from './command/portal';
 
 dotenv.config();
 // const app = express();
@@ -37,6 +38,7 @@ bot.telegram.setMyCommands([
 ]);
 
 adminCommand(bot);
+portalCommand(bot);
 
 // bot.launch().then(() => {
 //   console.log('Bot is running...');
