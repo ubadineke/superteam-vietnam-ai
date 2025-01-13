@@ -14,18 +14,19 @@ export const portalCommand = (bot: Telegraf<MyContext>) => {
 
   cancelCommand(bot);
 
-  bot.on('text', async (ctx) => {
-    if (ctx.session.currentCommand === 'portal') {
-      const userInput = ctx.message.text;
+  bot.on('text', async (ctx, next) => {
+    if (ctx.session.currentCommand !== 'portal') return next();
+    // if (ctx.session.currentCommand === 'portal') {
+    const userInput = ctx.message.text;
 
-      console.log(userInput);
-      //Query Database to get context for LLM
-      const queryResponse = await searchVectors([userInput]);
+    console.log(userInput);
+    //Query Database to get context for LLM
+    const queryResponse = await searchVectors([userInput]);
 
-      //LLM process and give answer based on the context given
-      const response = await geminiLLM(userInput, queryResponse);
+    //LLM process and give answer based on the context given
+    const response = await geminiLLM(userInput, queryResponse);
 
-      return ctx.reply(response);
-    }
+    return ctx.reply(response);
+    // }
   });
 };

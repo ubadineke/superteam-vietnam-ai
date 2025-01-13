@@ -5,17 +5,46 @@ import { adminCommand } from './command/admin';
 import dotenv from 'dotenv';
 import connectDB from './config/mongodb';
 import { portalCommand } from './command/portal';
-
+import Redis from 'ioredis';
+import { MiddlewareFn } from 'telegraf';
+import { contentAdvisorCommand } from './command/contentAdvisor';
 dotenv.config();
 // const app = express();
+// Create Redis session instance
+
+export const redisClient = new Redis({
+  host: process.env.REDIS_HOST || '127.0.0.1',
+  port: parseInt(process.env.REDIS_PORT || '6379'),
+  password: process.env.REDIS_PASSWORD || undefined,
+});
 
 interface SessionData {
-  currentCommand?: string | null;
+  currentDraft?: string | null;
+  messageHistory?: { role: string; content: string }[];
+  currentCommand?: string;
 }
+
+// interface SessionData {
+//   currentCommand?: string | null;
+// }
 
 export interface MyContext extends Context {
   session?: SessionData;
 }
+
+const redisSessionMiddleware: MiddlewareFn<MyContext> = async (ctx, next) => {
+  if (!ctx.from) return next();
+
+  const sessionKey = `session:${ctx.from.id}`;
+
+  // Load session from Redis
+  const sessionData = await redisClient.get(sessionKey);
+  ctx.session = sessionData ? JSON.parse(sessionData) : {};
+
+  // Save session back to Redis after processing
+  await next();
+  await redisClient.set(sessionKey, JSON.stringify(ctx.session), 'EX', 3600); // Session expires after 1 hour
+};
 
 if (process.env.BOT_TOKEN === undefined) {
   throw new TypeError('BOT_TOKEN must be provided!');
@@ -29,16 +58,20 @@ bot.use(
   })
 );
 
+bot.use(redisSessionMiddleware);
+
 bot.telegram.setMyCommands([
   { command: 'portal', description: 'Knowledge Portal' },
   { command: 'finder', description: 'Superteam Member Finder' },
   { command: 'assistant', description: 'Twitter Management Assistant' },
+  { command: 'contentadvisor', description: 'Content advisor for Twitter' },
   { command: 'admin', description: 'Carry out admin actions' },
   { command: 'cancel', description: 'Cancel the current session' },
 ]);
 
 adminCommand(bot);
 portalCommand(bot);
+contentAdvisorCommand(bot);
 
 // bot.launch().then(() => {
 //   console.log('Bot is running...');
