@@ -8,6 +8,7 @@ import { portalCommand } from './command/portal';
 import Redis from 'ioredis';
 import { MiddlewareFn } from 'telegraf';
 import { contentAdvisorCommand } from './command/contentAdvisor';
+import { memberFinderCommand } from './command/memberFinder';
 dotenv.config();
 // const app = express();
 // Create Redis session instance
@@ -72,6 +73,7 @@ bot.telegram.setMyCommands([
 adminCommand(bot);
 portalCommand(bot);
 contentAdvisorCommand(bot);
+memberFinderCommand(bot);
 
 // bot.launch().then(() => {
 //   console.log('Bot is running...');

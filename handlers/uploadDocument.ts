@@ -2,7 +2,7 @@ import { Telegraf } from 'telegraf';
 import axios from 'axios';
 import { MyContext } from '../bot';
 import { chunkData } from '../utils/chunkData';
-import { vectorizeAndUpsert } from '../utils/vectorizeAndUpsert';
+import { vectorizeAndUpsert, vectorizeAndUpsert2 } from '../utils/vectorizeAndUpsert';
 import generateRandomNumber from '../utils/generateRandomNumber';
 import Documents from '../models/document.model';
 
@@ -34,18 +34,32 @@ const uploadDocumentHandler = (bot: Telegraf<MyContext>) => {
 
       // Fetch the document content (assuming it's a text-based document)
       const response = await axios.get(fileUrl.href);
+      console.log('response', response.data);
+
+      let namespace = 'first-namespace';
+      let data = response.data;
+
+      if (file_name?.endsWith('.json')) {
+        ctx.reply('Json file found, training the member finder tool');
+
+        namespace = 'second-namespace';
+        // Convert the entire JSON data into a single string
+        let jsonString = JSON.stringify(response.data);
+        jsonString = jsonString.replace(/\\"/g, '"');
+        data = jsonString;
+      }
 
       if (!response.data) {
         throw new Error('Failed to fetch document content.');
       }
 
-      console.log('Document content:', response.data); // Here you can process the document content further
+      console.log('Document content:', data); // Here you can process the document content further
 
       //Chunk Data
-      const chunkedData = await chunkData(response.data);
+      const chunkedData = await chunkData(data);
 
       //Vectorize Chunked Data and Upsert to Pinecone
-      await vectorizeAndUpsert(chunkedData, documentId);
+      await vectorizeAndUpsert(chunkedData, documentId, namespace);
 
       //If Vectorization is successful, store a reference in mongodb
       await Documents.create({ id: documentId, name: file_name });
