@@ -1,9 +1,7 @@
 import { Telegraf, Markup } from 'telegraf';
 import { MyContext } from '../bot';
 import cancelCommand from './cancel';
-// import uploadDocumentHandler from '../handlers/uploadDocument';
-// import { searchVectors } from '../utils/searchVectors';
-// import { geminiLLM } from '../utils/gemini';
+
 import { generateSuggestions } from '../utils/gemini2';
 
 const TWEET_REFINEMENT_PROMPT = `

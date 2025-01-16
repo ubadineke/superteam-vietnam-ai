@@ -1,21 +1,8 @@
 import { Telegraf, Markup } from 'telegraf';
 import { MyContext } from '../bot';
 import cancelCommand from './cancel';
-// import uploadDocumentHandler from '../handlers/uploadDocument';
 import { searchVectors } from '../utils/searchVectors';
-// import { geminiLLM } from '../utils/gemini';
-import { generateSuggestions } from '../utils/gemini2';
-import { geminiKnowledgePortal, geminiMemberFinder } from '../utils/gemini';
-
-// const TWEET_REFINEMENT_PROMPT = `
-// You are assisting a content creator in generating and refining content ideas, specifically tweets. Use the following history of interactions to provide thoughtful and relevant suggestions.
-
-// Interaction History:
-// {formattedHistory}
-
-// Now, refine the following tweet:
-// "{userInput}"
-// `;
+import { geminiMemberFinder } from '../utils/gemini';
 
 export const memberFinderCommand = (bot: Telegraf<MyContext>) => {
   bot.command('finder', (ctx) => {

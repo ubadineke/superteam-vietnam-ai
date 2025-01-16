@@ -66,3 +66,34 @@ Your response should clearly identify the relevant members, explaining why they 
 
   return assistantResponse;
 }
+
+export interface TweetContext {
+  recentTweets: string[];
+  followedAccounts: { name: string; handle: string }[];
+  trendingTopics: string[];
+}
+
+async function geminiGenerateTweetSuggestions(context: TweetContext, draft?: string): Promise<string> {
+  const gmodel = googleAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+  const prompt = `
+You are assisting Superteam Vietnam with managing their Twitter account. Based on the provided context, propose engaging tweets or refine a draft tweet.
+
+Context:
+Recent Tweets:
+${context.recentTweets.join('\n')}
+
+Followed Accounts:
+${context.followedAccounts.map((acc) => `${acc.name} (@${acc.handle})`).join('\n')}
+
+Trending Topics:
+${context.trendingTopics.join(', ')}
+
+${draft ? `Draft: ${draft}` : ''}
+
+Now provide 3 engaging tweet suggestions:
+`;
+
+  const response = await gmodel.generateContent(prompt);
+  return response.response.text();
+}
