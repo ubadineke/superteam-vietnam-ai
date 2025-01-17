@@ -77,7 +77,7 @@ export async function geminiGenerateTweetSuggestions(context: TweetContext, draf
   const gmodel = googleAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
   const prompt = `
-You are assisting Superteam Vietnam with managing their Twitter account. Based on the provided context, propose engaging tweets or refine a draft tweet.
+You are assisting Superteam Vietnam with managing their Twitter account. Based on the provided context, propose engaging tweets or refine a draft tweet, also correct misspelt handles, using the list of followed accounts given.
 
 Context:
 Recent Tweets:
