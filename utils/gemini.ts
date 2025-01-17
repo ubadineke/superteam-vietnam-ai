@@ -73,7 +73,7 @@ export interface TweetContext {
   trendingTopics: string[];
 }
 
-async function geminiGenerateTweetSuggestions(context: TweetContext, draft?: string): Promise<string> {
+export async function geminiGenerateTweetSuggestions(context: TweetContext, draft?: string): Promise<string> {
   const gmodel = googleAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
   const prompt = `

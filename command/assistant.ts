@@ -2,7 +2,12 @@ import { Telegraf, Markup } from 'telegraf';
 import { MyContext } from '../bot';
 import cancelCommand from './cancel';
 import { searchVectors } from '../utils/searchVectors';
-import { geminiKnowledgePortal, geminiMemberFinder, TweetContext } from '../utils/gemini';
+import {
+  geminiGenerateTweetSuggestions,
+  geminiKnowledgePortal,
+  geminiMemberFinder,
+  TweetContext,
+} from '../utils/gemini';
 import dotenv from 'dotenv';
 import { getTwitterUserFollowing, getTwitterUserRecentTweets } from '../utils/fetchTwitterInfo';
 dotenv.config();
@@ -27,15 +32,20 @@ export const assistantCommand = (bot: Telegraf<MyContext>) => {
       followedAccounts,
       trendingTopics,
     };
-    const userInput = ctx.message.text;
 
-    console.log(userInput);
-    //Query Database to get context for LLM
-    const queryResponse = await searchVectors([userInput], 'second-namespace');
+    const tweetSuggestions = await geminiGenerateTweetSuggestions(context);
 
-    //LLM process and give answer based on the context given
-    const response = await geminiMemberFinder(userInput, queryResponse);
+    return ctx.reply(JSON.stringify(tweetSuggestions));
 
-    return ctx.reply(response);
+    // const userInput = ctx.message.text;
+
+    // console.log(userInput);
+    // //Query Database to get context for LLM
+    // const queryResponse = await searchVectors([userInput], 'second-namespace');
+
+    // //LLM process and give answer based on the context given
+    // const response = await geminiMemberFinder(userInput, queryResponse);
+
+    // return ctx.reply(response);
   });
 };
