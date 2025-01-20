@@ -1,6 +1,6 @@
 import { Context, Telegraf, Markup, session } from 'telegraf';
 import { adminCommand } from './command/admin';
-// import express from 'express';
+import express from 'express';
 // import axios from 'axios';
 import dotenv from 'dotenv';
 import connectDB from './config/mongodb';
@@ -20,7 +20,8 @@ dotenv.config();
 //   password: process.env.REDIS_PASSWORD || undefined,
 // });
 
-export const redisClient = new Redis(process.env.EXTERNAL_REDIS as string);
+// export const redisClient = new Redis(process.env.EXTERNAL_REDIS as string);
+export const redisClient = new Redis();
 
 interface SessionData {
   currentDraft?: string | null;
@@ -83,6 +84,7 @@ assistantCommand(bot);
 //   console.log('Bot is running...');
 // });
 
+// bot.telegram.setWebhook(process.env.WEBHOOK_URL as string);
 // app.use(bot.webhookCallback('/webhook'));
 
 // Define your bot commands or logic

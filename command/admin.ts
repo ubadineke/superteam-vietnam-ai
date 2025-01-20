@@ -2,6 +2,8 @@ import { Telegraf, Markup } from 'telegraf';
 import { MyContext } from '../bot';
 import cancelCommand from './cancel';
 import uploadDocumentHandler from '../handlers/uploadDocument';
+import Documents from '../models/document.model';
+import { handleDocumentDeletion, listAndManageDocuments } from '../handlers/manageDocuments';
 
 export const adminCommand = (bot: Telegraf<MyContext>) => {
   bot.command('admin', (ctx, next) => {
@@ -44,7 +46,7 @@ export const adminCommand = (bot: Telegraf<MyContext>) => {
 
     switch (userInput) {
       case '🛠 Manage Documents':
-        return ctx.reply('User management interface...');
+        return listAndManageDocuments(ctx);
       case '📤 Upload Document':
         return ctx.reply('Upload a document to train the AI., One document at a time');
       case '🔙 Exit Admin Mode':
@@ -58,5 +60,28 @@ export const adminCommand = (bot: Telegraf<MyContext>) => {
     // }
   });
 
+  bot.on('callback_query', async (ctx) => {
+    const data = ctx.callbackQuery?.data;
+    if (data?.startsWith('delete_doc_')) {
+      const docId = data.split('delete_doc_')[1];
+      console.log(data);
+
+      // Custom code to delete the document or perform an action
+      try {
+        const doc = await Documents.findByIdAndDelete(docId);
+        if (!doc) {
+          await ctx.answerCbQuery('Document not found or already deleted.');
+        } else {
+          await ctx.answerCbQuery('Document deleted successfully.');
+          await ctx.reply(`Document "${doc.name}" has been deleted.`);
+        }
+      } catch (error) {
+        console.error('Error deleting document:', error);
+        await ctx.answerCbQuery('An error occurred while deleting the document.');
+      }
+    }
+  });
+
   uploadDocumentHandler(bot);
+  handleDocumentDeletion(bot);
 };
