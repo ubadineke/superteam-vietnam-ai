@@ -2,7 +2,7 @@ import { Telegraf, Markup } from 'telegraf';
 import { MyContext } from '../bot';
 import cancelCommand from './cancel';
 import { searchVectors } from '../utils/searchVectors';
-import { geminiMemberFinder } from '../utils/gemini';
+import { llmMemberFinder } from '../utils/llm';
 
 export const memberFinderCommand = (bot: Telegraf<MyContext>) => {
   bot.command('finder', (ctx) => {
@@ -24,7 +24,7 @@ export const memberFinderCommand = (bot: Telegraf<MyContext>) => {
     const queryResponse = await searchVectors([userInput], 'second-namespace');
 
     //LLM process and give answer based on the context given
-    const response = await geminiMemberFinder(userInput, queryResponse);
+    const response = await llmMemberFinder(userInput, queryResponse);
 
     return ctx.reply(response);
   });

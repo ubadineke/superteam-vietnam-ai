@@ -2,7 +2,7 @@ import { Telegraf, Markup } from 'telegraf';
 import { MyContext } from '../bot';
 import cancelCommand from './cancel';
 import { searchVectors } from '../utils/searchVectors';
-import { geminiKnowledgePortal } from '../utils/gemini';
+import { llmKnowledgePortal } from '../utils/llm';
 
 export const portalCommand = (bot: Telegraf<MyContext>) => {
   bot.command('portal', (ctx) => {
@@ -22,7 +22,7 @@ export const portalCommand = (bot: Telegraf<MyContext>) => {
     const queryResponse = await searchVectors([userInput], 'first-namespace');
 
     //LLM process and give answer based on the context given
-    const response = await geminiKnowledgePortal(userInput, queryResponse);
+    const response = await llmKnowledgePortal(userInput, queryResponse);
 
     return ctx.reply(response);
   });

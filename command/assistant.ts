@@ -1,16 +1,11 @@
 import { Telegraf, Markup } from 'telegraf';
 import { MyContext } from '../bot';
 import cancelCommand from './cancel';
-import { searchVectors } from '../utils/searchVectors';
-import {
-  geminiGenerateTweetSuggestions,
-  geminiKnowledgePortal,
-  geminiMemberFinder,
-  TweetContext,
-} from '../utils/gemini';
+import { llmGenerateTweetSuggestions, TweetContext } from '../utils/llm';
 import dotenv from 'dotenv';
 import { getTwitterUserFollowing, getTwitterUserRecentTweets } from '../utils/fetchTwitterInfo';
 dotenv.config();
+
 export const assistantCommand = (bot: Telegraf<MyContext>) => {
   bot.command('assistant', (ctx) => {
     ctx.session.currentCommand = 'assistant';
@@ -35,7 +30,10 @@ export const assistantCommand = (bot: Telegraf<MyContext>) => {
       followedAccounts,
       trendingTopics,
     };
-    return ctx.reply(
+    const tweetSuggestions = await llmGenerateTweetSuggestions(context, draft);
+
+    await ctx.reply(tweetSuggestions);
+    await ctx.reply(
       'Choose which tweet to publish',
       Markup.inlineKeyboard([
         [Markup.button.callback('Publish Tweet 1', 'PUBLISH_TWEET_1')],
@@ -43,19 +41,5 @@ export const assistantCommand = (bot: Telegraf<MyContext>) => {
         [Markup.button.callback('Publish Tweet 3', 'PUBLISH_TWEET_3')],
       ])
     );
-    // const tweetSuggestions = await geminiGenerateTweetSuggestions(context, draft);
-
-    // return ctx.reply(tweetSuggestions);
-
-    // const userInput = ctx.message.text;
-
-    // console.log(userInput);
-    // //Query Database to get context for LLM
-    // const queryResponse = await searchVectors([userInput], 'second-namespace');
-
-    // //LLM process and give answer based on the context given
-    // const response = await geminiMemberFinder(userInput, queryResponse);
-
-    // return ctx.reply(response);
   });
 };
