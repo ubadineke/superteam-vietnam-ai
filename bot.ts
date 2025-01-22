@@ -11,7 +11,7 @@ import { contentAdvisorCommand } from './command/contentAdvisor';
 import { memberFinderCommand } from './command/memberFinder';
 import { assistantCommand } from './command/assistant';
 dotenv.config();
-// const app = express();
+const app = express();
 // Create Redis session instance
 
 // export const redisClient = new Redis({
@@ -84,15 +84,15 @@ assistantCommand(bot);
 //   console.log('Bot is running...');
 // });
 
-// bot.telegram.setWebhook(process.env.WEBHOOK_URL as string);
-// app.use(bot.webhookCallback('/webhook'));
+app.use(bot.webhookCallback('/webhook'));
 
 // Define your bot commands or logic
 
 // Start the local server
-// app.listen(3000, () => {
-//   console.log('Bot is running on port 3000');
-// });
+app.listen(3000, () => {
+  bot.telegram.setWebhook(process.env.WEBHOOK_URL as string);
+  console.log('Bot is running on port 3000');
+});
 
 // bot.launch({
 //   webhook: {
@@ -103,7 +103,7 @@ assistantCommand(bot);
 // });
 
 connectDB();
-bot.launch();
+// bot.launch();
 
 bot.command('start', (ctx) => {
   ctx.reply('Welcome! This bot uses webhooks.');

@@ -48,9 +48,6 @@ export const contentAdvisorCommand = (bot: Telegraf<MyContext>) => {
 
       // Respond with LLM suggestions
       await ctx.reply(`LLM Suggestion:\n${refinedTweet}\n\nRefine further or approve?`);
-
-      // Respond with LLM suggestions
-      ctx.reply(`LLM Suggestion:\n${refinedTweet}\n\nRefine further or approve?`);
     }
   });
 };
