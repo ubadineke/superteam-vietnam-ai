@@ -28,13 +28,17 @@ export const assistantCommand = (bot: Telegraf<MyContext>) => {
     const followedAccounts = await getTwitterUserFollowing();
     const recentTweets = await getTwitterUserRecentTweets();
     const trendingTopics = ['DeFi', 'Blockchain', 'Web3', 'Superteam', 'Solana', 'AI'];
-    ctx.reply(JSON.stringify(recentTweets));
+    // ctx.reply(JSON.stringify(recentTweets));
 
     const context: TweetContext = {
       recentTweets,
       followedAccounts,
       trendingTopics,
     };
+    const tweetSuggestions = await geminiGenerateTweetSuggestions(context, draft);
+
+    await ctx.reply(tweetSuggestions);
+
     return ctx.reply(
       'Choose which tweet to publish',
       Markup.inlineKeyboard([
@@ -43,10 +47,6 @@ export const assistantCommand = (bot: Telegraf<MyContext>) => {
         [Markup.button.callback('Publish Tweet 3', 'PUBLISH_TWEET_3')],
       ])
     );
-    // const tweetSuggestions = await geminiGenerateTweetSuggestions(context, draft);
-
-    // return ctx.reply(tweetSuggestions);
-
     // const userInput = ctx.message.text;
 
     // console.log(userInput);

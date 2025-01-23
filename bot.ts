@@ -89,7 +89,7 @@ app.use(bot.webhookCallback('/webhook'));
 // Define your bot commands or logic
 
 // Start the local server
-app.listen(3000, () => {
+app.listen(3000, '0.0.0.0', () => {
   bot.telegram.setWebhook(process.env.WEBHOOK_URL as string);
   console.log('Bot is running on port 3000');
 });
@@ -106,10 +106,10 @@ connectDB();
 // bot.launch();
 
 bot.command('start', (ctx) => {
-  ctx.reply('Welcome! This bot uses webhooks.');
+  ctx.reply('Welcome!. Superteam Vietnam AI Assistant Bot for easy tasking.');
 });
 
-// bot.start((ctx) => {
+// bot.start((ctx) => {//
 //   ctx.reply('Welcome! Here are the services we offer:');
 // });
 
