@@ -1,7 +1,7 @@
 import { Telegraf, Markup } from "telegraf";
 import { MyContext } from "../bot";
 import cancelCommand from "./cancel";
-import { llmGenerateTweetSuggestions } from "../utils/llm";
+import
 
 export const contentAdvisorCommand = (bot: Telegraf<MyContext>) => {
   bot.command("contentadvisor", (ctx) => {
@@ -27,11 +27,7 @@ export const contentAdvisorCommand = (bot: Telegraf<MyContext>) => {
       const userInput = ctx.message.text;
 
       // / Fetch session history from Redis and build context for the LLM
-      const refinedTweet = await llmGenerateTweetSuggestions(
-        userId,
-        userInput,
-        ctx.session.messageHistory
-      );
+      const refinedTweet = await generateSuggestions(userId, userInput, ctx.session.messageHistory);
       // Fetch session history from Redis and build context for the LLM
       // const refinedTweet = await generateSuggestions(userId, userInput, ctx.session.messageHistory);
 

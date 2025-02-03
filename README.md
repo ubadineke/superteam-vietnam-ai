@@ -139,3 +139,9 @@ async function llmGenerateSuggestions(
 You can watch a live demo of this application in action on YouTube. The demo showcases the core features and functionality of the LLM-powered system.
 
 [Watch the Live Demo on YouTube](https://youtu.be/WVna-djLfUk)
+
+## Current Deployment Status and Next Steps
+
+The bot is not currently deployed due to the lack of available servers to host the Llama3 model.
+
+Also as this is an MVP, the architecture and codebase are flexible and open to future modifications.
